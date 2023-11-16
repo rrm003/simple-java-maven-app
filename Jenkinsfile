@@ -45,7 +45,7 @@ pipeline {
 
                     // Deploy to Google Compute Engine using gcloud commands
                     sh "gcloud config set project ${GCP_PROJECT}"
-                    sh "gcloud compute ssh ${GCE_INSTANCE_NAME} --zone=${GCP_ZONE} --command='cd /path/to/your/application && ./deploy.sh'"
+                    sh "gcloud compute ssh ${GCE_INSTANCE_NAME} --zone=${GCP_ZONE} --command='./jenkins/scripts/deliver.sh'"
                 }
             }
         }
