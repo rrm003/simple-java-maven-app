@@ -1,16 +1,22 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.5-eclipse-temurin-17-alpine' 
-            args '-v /root/.m2:/root/.m2' 
-        }
+    agent any
+
+    tools {
+        maven 'Maven 3.9.5' // Make sure this tool name matches the Maven tool configured in Jenkins
     }
+
     stages {
-        stage('Build') { 
+        stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package' 
+                script {
+                    // Custom Maven settings if needed
+                    def mavenHome = tool 'Maven 3.9.5'
+                    env.PATH = "${mavenHome}/bin:${env.PATH}"
+
+                    // Run Maven build
+                    sh 'mvn -B -DskipTests clean package'
+                }
             }
         }
     }
 }
-
