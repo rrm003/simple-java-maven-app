@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     // Authenticate with Google Cloud Platform using service account credentials
-                    withCredentials([file(credentialsId: 'your-google-credentials-id', variable: 'GOOGLE_CREDENTIALS_FILE')]) {
+                    withCredentials([file(credentialsId: 'gcloud-creds', variable: 'GOOGLE_CREDENTIALS_FILE')]) {
                         sh "gcloud auth activate-service-account --key-file=${GOOGLE_CREDENTIALS_FILE}"
                     }
 
