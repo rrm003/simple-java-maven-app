@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.9.5' // Make sure this tool name matches the Maven tool configured in Jenkins
+        maven 'maven' // Use the correct tool name 'maven'
     }
 
     stages {
@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     // Custom Maven settings if needed
-                    def mavenHome = tool 'Maven 3.9.5'
+                    def mavenHome = tool 'maven'
                     env.PATH = "${mavenHome}/bin:${env.PATH}"
 
                     // Run Maven build
