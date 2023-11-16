@@ -77,18 +77,5 @@ pipeline {
                 }
             }
         }
-
-        stage('Monitor with Stackdriver') {
-            steps {
-                script {
-                    // Set up monitoring and logging with Stackdriver on GCP
-                    sh "gcloud config set project ${GCP_PROJECT}"
-                    sh "gcloud auth activate-service-account --key-file=${GOOGLE_CREDENTIALS_FILE}"
-                    sh "gcloud components install stackdriver"
-                    sh "gcloud beta auth application-default login"
-                    sh "gcloud beta compute instances add-metadata ${GCE_INSTANCE_NAME} --zone=${GCP_ZONE} --metadata google-stackdriver-enabled=true"
-                }
-            }
-        }
     }
 }
