@@ -60,9 +60,11 @@ pipeline {
 
                     // Deploy to Google Compute Engine using gcloud commands
                     sh "gcloud config set project ${GCP_PROJECT}"
-                    sh "gcloud compute scp --zone=${GCP_ZONE} gs://${STORAGE_BUCKET}/target/my-app-1.0-SNAPSHOT.jar ${GCE_INSTANCE_NAME}:~/"
-                    sh "gcloud compute ssh --zone=${GCP_ZONE} ${GCE_INSTANCE_NAME} --command 'nohup java -jar ~/my-app-1.0-SNAPSHOT.jar  &'"
-                    sh "gcloud compute ssh ${GCE_INSTANCE_NAME} --zone=${GCP_ZONE} --command='ls workspace -al'"
+                    
+                    // Copy the JAR file to the Compute Engine instance
+                    sh "gcloud compute scp --zone=${GCP_ZONE} my-app-1.0-SNAPSHOT.jar ${GCE_INSTANCE_NAME}:~/"
+                    // SSH into the instance and start the application
+                    sh "gcloud compute ssh --zone=${GCP_ZONE} ${GCE_INSTANCE_NAME} --command 'nohup java -jar ~/y-app-1.0-SNAPSHOT.jar &'"
                 }
             }
         }
