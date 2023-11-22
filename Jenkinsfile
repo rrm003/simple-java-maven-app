@@ -1,18 +1,16 @@
 pipeline {
     agent any
-
     tools {
         maven 'maven' // Use the correct tool name 'maven'
     }
-
     environment {
         GOOGLE_CREDENTIALS = credentials('gcloud-creds')
         GCP_PROJECT = 'valut-svc'
         GCE_INSTANCE_NAME = 'instance-1'
         GCP_ZONE = 'us-central1-a'
         STORAGE_BUCKET = 'lab3artifacts'
+        LOG_NAME = "jenkins-${JOB_NAME}-${BUILD_NUMBER}" 
     }
-
     stages {
         stage('Build') {
             steps {
@@ -26,7 +24,6 @@ pipeline {
                 }
             }
         }
-
         stage('Test') {
             steps {
                 script {
@@ -35,7 +32,6 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to Google Cloud Storage') {
             steps {
                 script {
@@ -49,7 +45,6 @@ pipeline {
                 }
             }
         }
-
         stage('Download from Google Cloud Storage') {
             steps {
                 script {
@@ -58,7 +53,6 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to Google Compute Engine') {
             steps {
                 script {
@@ -78,4 +72,16 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            script {
+                // Send all logs to Google Cloud Logging
+                withCredentials([file(credentialsId: 'gcloud-creds', variable: 'GOOGLE_CREDENTIALS_FILE')]) {
+                    sh "gcloud auth activate-service-account --key-file=${GOOGLE_CREDENTIALS_FILE}"
+                    sh "gcloud config set project ${GCP_PROJECT}"
+                    sh "gcloud logging write ${LOG_NAME} '${JOB_NAME} build ${BUILD_NUMBER} completed'"
+                }
+            }
+        }
+    } 
 }
